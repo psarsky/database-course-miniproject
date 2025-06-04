@@ -1,4 +1,4 @@
-const User = require("../models/User");
+const User = require('../models/User');
 
 // Utwórz użytkownika
 const createUser = async (req, res) => {
@@ -26,7 +26,7 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ error: "Użytkownik nie znaleziony" });
+    if (!user) return res.status(404).json({ error: 'Użytkownik nie znaleziony' });
     res.json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -42,7 +42,7 @@ const updateUser = async (req, res) => {
       { name, email },
       { new: true } // zwróć zaktualizowany dokument
     );
-    if (!updatedUser) return res.status(404).json({ error: "Użytkownik nie znaleziony" });
+    if (!updatedUser) return res.status(404).json({ error: 'Użytkownik nie znaleziony' });
     res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -53,8 +53,8 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) return res.status(404).json({ error: "Użytkownik nie znaleziony" });
-    res.json({ message: "Użytkownik usunięty" });
+    if (!deletedUser) return res.status(404).json({ error: 'Użytkownik nie znaleziony' });
+    res.json({ message: 'Użytkownik usunięty' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
