@@ -2,8 +2,11 @@ const Equipment = require('../models/Equipment');
 
 const createEquipment = async (req, res) => {
   try {
-    const { name, type, available } = req.body;
-    const equipment = new Equipment({ name, type, available });
+    const { name, type, available, pricePerDay } = req.body;
+    if (typeof pricePerDay !== 'number' || pricePerDay < 0) {
+      return res.status(400).json({ error: 'Cena za dobę jest wymagana i musi być nieujemna.' });
+    }
+    const equipment = new Equipment({ name, type, available, pricePerDay });
     const saved = await equipment.save();
     res.status(201).json(saved);
   } catch (error) {
@@ -32,10 +35,10 @@ const getEquipmentById = async (req, res) => {
 
 const updateEquipment = async (req, res) => {
   try {
-    const { name, type, available } = req.body;
+    const { name, type, available, pricePerDay } = req.body;
     const updated = await Equipment.findByIdAndUpdate(
       req.params.id,
-      { name, type, available },
+      { name, type, available, pricePerDay },
       { new: true }
     );
     if (!updated) return res.status(404).json({ error: 'Sprzęt nie znaleziony' });

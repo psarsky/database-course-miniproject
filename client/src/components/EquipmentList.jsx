@@ -42,6 +42,7 @@ export default function EquipmentList({ equipment }) {
               <th className="border-b p-2">Typ</th>
               <th className="border-b p-2">ID</th>
               <th className="border-b p-2">Status</th>
+              <th className="border-b p-2">Cena za dobę (PLN)</th>
             </tr>
           </thead>
           <tbody>
@@ -51,6 +52,7 @@ export default function EquipmentList({ equipment }) {
                 <td className="border-b p-2">{eq.type}</td>
                 <td className="border-b p-2 text-xs text-gray-500">{eq._id}</td>
                 <td className="border-b p-2">{eq.available ? 'Dostępny' : 'Wypożyczony'}</td>
+                <td className="border-b p-2">{typeof eq.pricePerDay === 'number' ? eq.pricePerDay.toFixed(2) : '-'}</td>
               </tr>
             ))}
           </tbody>

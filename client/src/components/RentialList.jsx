@@ -67,6 +67,7 @@ export default function RentalList({ userId, refresh }) {
             <div><strong>Od:</strong> {new Date(r.rentalDate).toLocaleString()}</div>
             <div><strong>Do:</strong> {new Date(r.returnDate).toLocaleString()}</div>
             <div><strong>Status:</strong> {r.returned ? 'Zwrócono' : 'Wypożyczony'}</div>
+            <div><strong>Koszt wypożyczenia:</strong> {typeof r.cost === 'number' ? r.cost.toFixed(2) + ' PLN' : '-'}</div>
           </li>
         ))}
       </ul>

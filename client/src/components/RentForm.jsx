@@ -34,6 +34,18 @@ export default function RentForm({ onRentalSuccess }) {
     setForm(prev => ({ ...prev, rentalDate: local }));
   };
 
+  // Wyliczanie ceny na froncie (podgląd)
+  const getPricePreview = () => {
+    const eq = equipmentList.find(e => e._id === form.equipmentId);
+    if (!eq || !form.rentalDate || !form.returnDate) return null;
+    const start = new Date(form.rentalDate);
+    const end = new Date(form.returnDate);
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const days = Math.ceil((end - start) / msPerDay) || 1;
+    const cost = days * eq.pricePerDay;
+    return { days, cost };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -73,7 +85,7 @@ export default function RentForm({ onRentalSuccess }) {
           <option value="">-- wybierz sprzęt --</option>
           {equipmentList.filter(eq => eq.available).map(eq => (
             <option key={eq._id} value={eq._id}>
-              {eq.name} ({eq.type})
+              {eq.name} ({eq.type}) — {typeof eq.pricePerDay === 'number' ? eq.pricePerDay.toFixed(2) + ' PLN/doba' : '-'}
             </option>
           ))}
         </select>
@@ -101,6 +113,15 @@ export default function RentForm({ onRentalSuccess }) {
           className="w-full p-2 border rounded"
         />
       </div>
+      {(() => {
+        const preview = getPricePreview();
+        if (!preview) return null;
+        return (
+          <div className="bg-blue-50 p-2 rounded border text-blue-900">
+            <strong>Koszt wypożyczenia:</strong> {preview.cost.toFixed(2)} PLN za {preview.days} {preview.days === 1 ? 'dobę' : 'doby'}
+          </div>
+        );
+      })()}
       <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
         Wypożycz
       </button>

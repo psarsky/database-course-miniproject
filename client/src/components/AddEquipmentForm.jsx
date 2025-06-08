@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function AddEquipmentForm({ onEquipmentAdded }) {
-  const [form, setForm] = useState({ name: '', type: '' });
+  const [form, setForm] = useState({ name: '', type: '', pricePerDay: '' });
   const [error, setError] = useState(null);
 
   const handleChange = e => {
@@ -12,18 +12,22 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!form.name || !form.type) {
+    if (!form.name || !form.type || form.pricePerDay === '') {
       setError('Wszystkie pola są wymagane');
       return;
     }
-
+    if (isNaN(form.pricePerDay) || Number(form.pricePerDay) < 0) {
+      setError('Cena musi być liczbą nieujemną');
+      return;
+    }
     try {
       const res = await axios.post('http://localhost:5000/api/equipment', {
         name: form.name,
-        type: form.type
+        type: form.type,
+        pricePerDay: Number(form.pricePerDay)
       });
       onEquipmentAdded(res.data);
-      setForm({ name: '', type: '' });
+      setForm({ name: '', type: '', pricePerDay: '' });
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.error || 'Błąd przy dodawaniu sprzętu');
@@ -54,6 +58,17 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
         <option value="buty">buty</option>
         <option value="kijki">kijki</option>
       </select>
+
+      <input
+        type="number"
+        name="pricePerDay"
+        placeholder="Cena za dobę (PLN)"
+        value={form.pricePerDay}
+        onChange={handleChange}
+        min="0"
+        step="0.01"
+        required
+      />
 
       {error && <p className="text-red-600">{error}</p>}
 

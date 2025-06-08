@@ -23,6 +23,13 @@ const rentEquipment = async (req, res) => {
       return res.status(400).json({ error: 'Sprzęt niedostępny' });
     }
 
+    // Wylicz koszt wypożyczenia
+    const start = new Date(rentalDate);
+    const end = new Date(returnDate);
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const days = Math.ceil((end - start) / msPerDay) || 1;
+    const cost = days * eq.pricePerDay;
+
     eq.available = false;
     await eq.save({ session });
 
@@ -31,7 +38,8 @@ const rentEquipment = async (req, res) => {
       equipment,
       rentalDate,
       returnDate,
-      returned: false
+      returned: false,
+      cost
     });
     const savedRental = await rental.save({ session });
 
