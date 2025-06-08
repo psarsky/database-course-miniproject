@@ -1,19 +1,43 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-export default function RentalList() {
+export default function RentalList({ userId, refresh }) {
   const [rentals, setRentals] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(userId || '');
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/rentals')
-      .then(res => setRentals(res.data))
-      .catch(err => console.error('Błąd pobierania wypożyczeń:', err));
+    axios.get('http://localhost:5000/api/users')
+      .then(res => setUsers(res.data))
+      .catch(() => setUsers([]));
   }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      axios.get(`http://localhost:5000/api/rentals/user/${selectedUser}`)
+        .then(res => setRentals(res.data))
+        .catch(() => setRentals([]));
+    } else {
+      axios.get('http://localhost:5000/api/rentals')
+        .then(res => setRentals(res.data))
+        .catch(() => setRentals([]));
+    }
+  }, [selectedUser, refresh]);
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Wszystkie wypożyczenia</h2>
+      <h2 className="text-2xl font-bold mb-4">Wypożyczenia {selectedUser ? 'użytkownika' : 'wszystkich użytkowników'}</h2>
+      <div className="mb-4">
+        <label>Filtruj po użytkowniku: </label>
+        <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)}>
+          <option value="">-- Wszyscy użytkownicy --</option>
+          {users.map(u => (
+            <option key={u._id} value={u._id}>{u.name} ({u.email})</option>
+          ))}
+        </select>
+      </div>
       <ul className="space-y-2">
+        {rentals.length === 0 && <li>Brak wypożyczeń do wyświetlenia.</li>}
         {rentals.map(r => (
           <li key={r._id} className="border p-2 rounded">
             <div><strong>ID:</strong> {r._id}</div>

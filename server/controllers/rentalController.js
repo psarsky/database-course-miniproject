@@ -154,6 +154,19 @@ const deleteRental = async (req, res) => {
   }
 };
 
+// Pobierz wszystkie wypożyczenia dla danego użytkownika
+const getRentalsByUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const rentals = await Rental.find({ user: userId })
+      .populate('user', 'name email')
+      .populate('equipment', 'name type available');
+    res.json(rentals);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Eksport funkcji
 module.exports = {
   createRental,
@@ -162,5 +175,6 @@ module.exports = {
   updateRental,
   deleteRental,
   rentEquipment,
-  returnRental
+  returnRental,
+  getRentalsByUser
 };

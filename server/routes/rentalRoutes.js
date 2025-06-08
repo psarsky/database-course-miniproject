@@ -8,7 +8,8 @@ const {
   updateRental,
   deleteRental,
   rentEquipment,
-  returnRental // ⬅️ dodana funkcja zwrotu
+  returnRental, // ⬅️ dodana funkcja zwrotu
+  getRentalsByUser
 } = require('../controllers/rentalController');
 
 // Wypożyczenie sprzętu z transakcją
@@ -23,5 +24,8 @@ router.get('/', getRentals);
 router.get('/:id', getRentalById);
 router.put('/:id', updateRental);
 router.delete('/:id', deleteRental);
+
+// Raport wypożyczeń dla danego użytkownika
+router.get('/user/:userId', getRentalsByUser);
 
 module.exports = router;
