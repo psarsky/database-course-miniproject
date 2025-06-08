@@ -5,36 +5,56 @@ export default function RentalList({ userId, refresh }) {
   const [rentals, setRentals] = useState([]);
   const [selectedUser, setSelectedUser] = useState(userId || '');
   const [users, setUsers] = useState([]);
+  const [equipmentList, setEquipmentList] = useState([]);
+  const [selectedEquipment, setSelectedEquipment] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:5000/api/users')
       .then(res => setUsers(res.data))
       .catch(() => setUsers([]));
+    axios.get('http://localhost:5000/api/equipment')
+      .then(res => setEquipmentList(res.data))
+      .catch(() => setEquipmentList([]));
   }, []);
 
   useEffect(() => {
+    let url = 'http://localhost:5000/api/rentals';
     if (selectedUser) {
-      axios.get(`http://localhost:5000/api/rentals/user/${selectedUser}`)
-        .then(res => setRentals(res.data))
-        .catch(() => setRentals([]));
-    } else {
-      axios.get('http://localhost:5000/api/rentals')
-        .then(res => setRentals(res.data))
-        .catch(() => setRentals([]));
+      url = `http://localhost:5000/api/rentals/user/${selectedUser}`;
     }
-  }, [selectedUser, refresh]);
+    axios.get(url)
+      .then(res => {
+        let filtered = res.data;
+        if (selectedEquipment) {
+          filtered = filtered.filter(r => r.equipment && r.equipment._id === selectedEquipment);
+        }
+        setRentals(filtered);
+      })
+      .catch(() => setRentals([]));
+  }, [selectedUser, selectedEquipment, refresh]);
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Wypożyczenia {selectedUser ? 'użytkownika' : 'wszystkich użytkowników'}</h2>
-      <div className="mb-4">
-        <label>Filtruj po użytkowniku: </label>
-        <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)}>
-          <option value="">-- Wszyscy użytkownicy --</option>
-          {users.map(u => (
-            <option key={u._id} value={u._id}>{u.name} ({u.email})</option>
-          ))}
-        </select>
+      <div className="mb-4 flex gap-4 items-center">
+        <div>
+          <label>Filtruj po użytkowniku: </label>
+          <select value={selectedUser} onChange={e => setSelectedUser(e.target.value)}>
+            <option value="">-- Wszyscy użytkownicy --</option>
+            {users.map(u => (
+              <option key={u._id} value={u._id}>{u.name} ({u.email})</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label>Filtruj po sprzęcie: </label>
+          <select value={selectedEquipment} onChange={e => setSelectedEquipment(e.target.value)}>
+            <option value="">-- Wszystkie sprzęty --</option>
+            {equipmentList.map(eq => (
+              <option key={eq._id} value={eq._id}>{eq.name} ({eq.type})</option>
+            ))}
+          </select>
+        </div>
       </div>
       <ul className="space-y-2">
         {rentals.length === 0 && <li>Brak wypożyczeń do wyświetlenia.</li>}
