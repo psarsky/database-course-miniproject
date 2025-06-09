@@ -1,10 +1,11 @@
-const Rental = require('../models/Rental');
-const Equipment = require('../models/Equipment');
-const mongoose = require('mongoose');
+import User from "../models/User.js";
+import Rental from "../models/Rental.js";
+import Equipment from "../models/Equipment.js";
+import { startSession } from "mongoose";
 
-// Wypożyczenie sprzętu z transakcją
+// Transaction-based equipment rental
 const rentEquipment = async (req, res) => {
-  const session = await mongoose.startSession();
+  const session = await startSession();
   session.startTransaction();
 
   try {
@@ -14,16 +15,22 @@ const rentEquipment = async (req, res) => {
     if (!eq) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(404).json({ error: 'Sprzęt nie znaleziony' });
+      return res.status(404).json({ error: "Equipment not found." });
     }
 
     if (!eq.available) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(400).json({ error: 'Sprzęt niedostępny' });
+      return res.status(400).json({ error: "Equipment unvailable." });
     }
 
-    // Wylicz koszt wypożyczenia
+    const usr = await User.findById(user).session(session);
+    if (!usr) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ error: "User not found." });
+    }
+
     const start = new Date(rentalDate);
     const end = new Date(returnDate);
     const msPerDay = 24 * 60 * 60 * 1000;
@@ -39,7 +46,7 @@ const rentEquipment = async (req, res) => {
       rentalDate,
       returnDate,
       returned: false,
-      cost
+      cost,
     });
     const savedRental = await rental.save({ session });
 
@@ -55,9 +62,9 @@ const rentEquipment = async (req, res) => {
   }
 };
 
-// Zwrot sprzętu z transakcją
+// Transaction-based return
 const returnRental = async (req, res) => {
-  const session = await mongoose.startSession();
+  const session = await startSession();
   session.startTransaction();
 
   try {
@@ -67,20 +74,20 @@ const returnRental = async (req, res) => {
     if (!rental) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(404).json({ error: 'Wypożyczenie nie znalezione' });
+      return res.status(404).json({ error: "Rental not found." });
     }
 
     if (rental.returned) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(400).json({ error: 'Sprzęt już został zwrócony' });
+      return res.status(400).json({ error: "Equipment already returned." });
     }
 
     const eq = await Equipment.findById(rental.equipment).session(session);
     if (!eq) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(404).json({ error: 'Sprzęt nie znaleziony' });
+      return res.status(404).json({ error: "Equipment not found." });
     }
 
     rental.returned = true;
@@ -92,7 +99,7 @@ const returnRental = async (req, res) => {
     await session.commitTransaction();
     session.endSession();
 
-    res.json({ message: 'Sprzęt zwrócony pomyślnie', rental });
+    res.json({ message: "Equipment returned correctly.", rental });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
@@ -101,8 +108,20 @@ const returnRental = async (req, res) => {
   }
 };
 
-// CRUD
+// Create a report of rentals by user ID
+const getRentalsByUser = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const rentals = await Rental.find({ user: userId })
+      .populate("user", "name email")
+      .populate("equipment", "name type available");
+    res.json(rentals);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
+// Create a new rental
 const createRental = async (req, res) => {
   try {
     const { user, equipment, rentalDate, returnDate, returned } = req.body;
@@ -114,29 +133,30 @@ const createRental = async (req, res) => {
   }
 };
 
+// Get a list of all rentals
 const getRentals = async (req, res) => {
   try {
-    const rentals = await Rental.find()
-      .populate('user', 'name email')
-      .populate('equipment', 'name type available');
+    const rentals = await Rental.find().populate("user", "name email").populate("equipment", "name type available");
     res.json(rentals);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Get rental by ID
 const getRentalById = async (req, res) => {
   try {
     const rental = await Rental.findById(req.params.id)
-      .populate('user', 'name email')
-      .populate('equipment', 'name type');
-    if (!rental) return res.status(404).json({ error: 'Wypożyczenie nie znalezione' });
+      .populate("user", "name email")
+      .populate("equipment", "name type");
+    if (!rental) return res.status(404).json({ error: "Wypożyczenie nie znalezione" });
     res.json(rental);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Update rental data by ID
 const updateRental = async (req, res) => {
   try {
     const { user, equipment, rentalDate, returnDate, returned } = req.body;
@@ -145,44 +165,31 @@ const updateRental = async (req, res) => {
       { user, equipment, rentalDate, returnDate, returned },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ error: 'Wypożyczenie nie znalezione' });
+    if (!updated) return res.status(404).json({ error: "Wypożyczenie nie znalezione" });
     res.json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Delete rental by ID
 const deleteRental = async (req, res) => {
   try {
     const deleted = await Rental.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'Wypożyczenie nie znalezione' });
-    res.json({ message: 'Wypożyczenie usunięte' });
+    if (!deleted) return res.status(404).json({ error: "Wypożyczenie nie znalezione" });
+    res.json({ message: "Wypożyczenie usunięte" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Pobierz wszystkie wypożyczenia dla danego użytkownika
-const getRentalsByUser = async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const rentals = await Rental.find({ user: userId })
-      .populate('user', 'name email')
-      .populate('equipment', 'name type available');
-    res.json(rentals);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Eksport funkcji
-module.exports = {
+export {
+  rentEquipment,
+  returnRental,
+  getRentalsByUser,
   createRental,
   getRentals,
   getRentalById,
   updateRental,
   deleteRental,
-  rentEquipment,
-  returnRental,
-  getRentalsByUser
 };

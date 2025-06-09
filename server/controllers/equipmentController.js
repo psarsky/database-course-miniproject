@@ -1,10 +1,11 @@
-const Equipment = require('../models/Equipment');
+import Equipment from "../models/Equipment.js";
 
+// Create new equipment
 const createEquipment = async (req, res) => {
   try {
     const { name, type, available, pricePerDay } = req.body;
-    if (typeof pricePerDay !== 'number' || pricePerDay < 0) {
-      return res.status(400).json({ error: 'Cena za dobę jest wymagana i musi być nieujemna.' });
+    if (typeof pricePerDay !== "number" || pricePerDay < 0) {
+      return res.status(400).json({ error: "Price per day must be a positive number." });
     }
     const equipment = new Equipment({ name, type, available, pricePerDay });
     const saved = await equipment.save();
@@ -14,7 +15,8 @@ const createEquipment = async (req, res) => {
   }
 };
 
-const getEquipments = async (req, res) => {
+// Get a list of all equipment
+const getEquipments = async (_, res) => {
   try {
     const list = await Equipment.find();
     res.json(list);
@@ -23,16 +25,18 @@ const getEquipments = async (req, res) => {
   }
 };
 
+// Get equipment by IDb
 const getEquipmentById = async (req, res) => {
   try {
     const item = await Equipment.findById(req.params.id);
-    if (!item) return res.status(404).json({ error: 'Sprzęt nie znaleziony' });
+    if (!item) return res.status(404).json({ error: "Equipment not found." });
     res.json(item);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Update equipment data by ID
 const updateEquipment = async (req, res) => {
   try {
     const { name, type, available, pricePerDay } = req.body;
@@ -41,27 +45,22 @@ const updateEquipment = async (req, res) => {
       { name, type, available, pricePerDay },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ error: 'Sprzęt nie znaleziony' });
+    if (!updated) return res.status(404).json({ error: "Equipment not found." });
     res.json(updated);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
+// Delete equipment by ID
 const deleteEquipment = async (req, res) => {
   try {
     const deleted = await Equipment.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ error: 'Sprzęt nie znaleziony' });
-    res.json({ message: 'Sprzęt usunięty' });
+    if (!deleted) return res.status(404).json({ error: "Equipment not found." });
+    res.json({ message: "Equipment deleted." });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = {
-  createEquipment,
-  getEquipments,
-  getEquipmentById,
-  updateEquipment,
-  deleteEquipment
-};
+export { createEquipment, getEquipments, getEquipmentById, updateEquipment, deleteEquipment };

@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import { Schema, model } from "mongoose";
 
-const equipmentSchema = new mongoose.Schema({
+const equipmentSchema = new Schema({
   name: { type: String, required: true },
-  type: { type: String, required: true }, // np. narty, buty, kask
+  type: { type: String, required: true },
   available: { type: Boolean, default: true },
-  pricePerDay: { type: Number, required: true, min: 0 } // cena za rozpoczęte 24h
+  pricePerDay: { type: Number, required: true, min: 0 },
 });
 
-module.exports = mongoose.model('Equipment', equipmentSchema);
+export default model("Equipment", equipmentSchema);

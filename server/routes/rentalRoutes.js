@@ -1,31 +1,27 @@
-const express = require('express');
-const router = express.Router();
-
-const {
+import { Router } from "express";
+import {
   createRental,
   getRentals,
   getRentalById,
   updateRental,
   deleteRental,
   rentEquipment,
-  returnRental, // ⬅️ dodana funkcja zwrotu
-  getRentalsByUser
-} = require('../controllers/rentalController');
+  returnRental,
+  getRentalsByUser,
+} from "../controllers/rentalController.js";
 
-// Wypożyczenie sprzętu z transakcją
-router.post('/rent', rentEquipment);
+const router = Router();
 
-// Zwrot sprzętu
-router.post('/:id/return', returnRental);
+router.post("/rent", rentEquipment);
 
-// Standardowe CRUD
-router.post('/', createRental);
-router.get('/', getRentals);
-router.get('/:id', getRentalById);
-router.put('/:id', updateRental);
-router.delete('/:id', deleteRental);
+router.post("/:id/return", returnRental);
 
-// Raport wypożyczeń dla danego użytkownika
-router.get('/user/:userId', getRentalsByUser);
+router.get("/user/:userId", getRentalsByUser);
 
-module.exports = router;
+router.post("/", createRental);
+router.get("/", getRentals);
+router.get("/:id", getRentalById);
+router.put("/:id", updateRental);
+router.delete("/:id", deleteRental);
+
+export default router;

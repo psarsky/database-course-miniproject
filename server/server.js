@@ -1,48 +1,45 @@
-require("dotenv").config(); // Wczytaj zmienne środowiskowe z .env
-const express = require("express");
-const mongoose = require("mongoose"); // Mongoose do połączenia z MongoDB
-const cors = require("cors");
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import { connect } from "mongoose";
+
+import userRoutes from "./routes/userRoutes.js";
+import equipmentRoutes from "./routes/equipmentRoutes.js";
+import rentalRoutes from "./routes/rentalRoutes.js";
+
+dotenv.config();
 
 const app = express();
 
 // --- Middleware ---
-app.use(cors()); // Zezwól na zapytania z frontu (np. React)
-app.use(express.json()); // Middleware do parsowania JSON w ciele requestów
+app.use(cors());
+app.use(express.json());
 
-// --- Import i użycie routów ---
-// Upewnij się, że pliki w './routes/' istnieją i są poprawne
-const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
+// --- Routes ---
+app.use("/api/users", userRoutes);
+app.use("/api/equipment", equipmentRoutes);
+app.use("/api/rentals", rentalRoutes);
 
-const equipmentRoutes = require('./routes/equipmentRoutes');
-app.use('/api/equipment', equipmentRoutes);
-
-const rentalRoutes = require('./routes/rentalRoutes');
-app.use('/api/rentals', rentalRoutes);
-
-// --- Główny endpoint testowy ---
+// --- Test endpoint ---
 app.get("/", (req, res) => {
   res.send("Ski rental backend is running!");
 });
 
-// --- Połącz z MongoDB i uruchom serwer ---
-const startServer = async () => {
+// --- MongoDB connection and server initialization ---
+(async () => {
   try {
     const mongoUri = process.env.MONGO_URI;
-    const port = process.env.PORT || 5000; // Użyj portu z .env lub domyślnego 5000
+    const port = process.env.PORT || 5000;
 
     console.log("Attempting to connect to MongoDB with URI:", mongoUri);
-    await mongoose.connect(mongoUri); // Połącz z MongoDB za pomocą Mongoose
+    await connect(mongoUri);
 
     console.log("✅ Connected to MongoDB");
     app.listen(port, () => {
-      console.log(`🚀 Server running on port ${port}`);
+      console.log(`🚀 Server running on http://localhost:${port}`);
     });
   } catch (err) {
     console.error("❌ MongoDB connection error:", err);
-    // Tutaj możesz dodać logikę do ponownej próby połączenia lub eleganckiego zamknięcia aplikacji
-    process.exit(1); // Opcjonalnie: zakończ proces aplikacji, jeśli nie udało się połączyć z DB
+    process.exit(1);
   }
-};
-
-startServer(); // Wywołaj funkcję startową
+})();
