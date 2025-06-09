@@ -25,7 +25,7 @@ const getEquipments = async (_, res) => {
   }
 };
 
-// Get equipment by IDb
+// Get equipment by ID
 const getEquipmentById = async (req, res) => {
   try {
     const item = await Equipment.findById(req.params.id);
