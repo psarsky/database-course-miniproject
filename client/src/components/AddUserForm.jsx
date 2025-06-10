@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
 function AddUserForm({ onUserAdded }) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const response = await fetch("http://localhost:5000/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email }),
     });
 
     const newUser = await response.json();
-    onUserAdded(newUser); // ⬅️ dodaj nowego do listy w App.js
-    setName('');
-    setEmail('');
+    onUserAdded(newUser);
+    setName("");
+    setEmail("");
   };
 
   return (

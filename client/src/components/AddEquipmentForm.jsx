@@ -1,36 +1,41 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
 
 export default function AddEquipmentForm({ onEquipmentAdded }) {
-  const [form, setForm] = useState({ name: '', type: '', pricePerDay: '' });
+  const [form, setForm] = useState({ name: "", type: "", pricePerDay: "" });
   const [error, setError] = useState(null);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError(null);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.type || form.pricePerDay === '') {
-      setError('Wszystkie pola są wymagane');
+    if (!form.name || !form.type || form.pricePerDay === "") {
+      setError("Wszystkie pola są wymagane");
       return;
     }
     if (isNaN(form.pricePerDay) || Number(form.pricePerDay) < 0) {
-      setError('Cena musi być liczbą nieujemną');
+      setError("Cena musi być liczbą nieujemną");
       return;
     }
     try {
-      const res = await axios.post('http://localhost:5000/api/equipment', {
-        name: form.name,
-        type: form.type,
-        pricePerDay: Number(form.pricePerDay)
+      const res = await fetch("http://localhost:5000/api/equipment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          type: form.type,
+          pricePerDay: Number(form.pricePerDay),
+        }),
       });
       onEquipmentAdded(res.data);
-      setForm({ name: '', type: '', pricePerDay: '' });
+      setForm({ name: "", type: "", pricePerDay: "" });
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || 'Błąd przy dodawaniu sprzętu');
+      setError(err.response?.data?.error || "Błąd przy dodawaniu sprzętu");
     }
   };
 
@@ -38,21 +43,9 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
     <form onSubmit={handleSubmit} className="p-4 border rounded space-y-2">
       <h2 className="text-xl font-bold">Dodaj nowy sprzęt</h2>
 
-      <input
-        type="text"
-        name="name"
-        placeholder="Nazwa sprzętu"
-        value={form.name}
-        onChange={handleChange}
-        required
-      />
+      <input type="text" name="name" placeholder="Nazwa sprzętu" value={form.name} onChange={handleChange} required />
 
-      <select
-        name="type"
-        value={form.type}
-        onChange={handleChange}
-        required
-      >
+      <select name="type" value={form.type} onChange={handleChange} required>
         <option value="">Wybierz typ sprzętu</option>
         <option value="narty">narty</option>
         <option value="buty">buty</option>
