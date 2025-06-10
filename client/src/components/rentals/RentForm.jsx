@@ -93,16 +93,16 @@ export default function RentForm({ onRentalSuccess }) {
   const preview = getPricePreview();
 
   return (
-    <div className="ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
-      <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <span className="text-2xl mr-2">&#x26F7;&#xFE0F;</span>
+    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+      <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
+        <span className="mr-2 text-2xl">&#x26F7;&#xFE0F;</span>
         Wypożycz Sprzęt
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128100;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128100;</span>
             Wybierz klienta:
           </label>
           <select
@@ -110,7 +110,7 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.userId}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200">
             <option value="">-- wybierz klienta --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
@@ -121,8 +121,8 @@ export default function RentForm({ onRentalSuccess }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#127939;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#127939;</span>
             Wybierz sprzęt:
           </label>
           <select
@@ -130,7 +130,7 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.equipmentId}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200">
             <option value="">-- wybierz sprzęt --</option>
             {equipmentList
               .filter((eq) => eq.available)
@@ -144,8 +144,8 @@ export default function RentForm({ onRentalSuccess }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128197;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128197;</span>
             Data i godzina wypożyczenia:
           </label>
           <div className="flex gap-2">
@@ -155,20 +155,20 @@ export default function RentForm({ onRentalSuccess }) {
               value={form.rentalDate}
               onChange={handleChange}
               required
-              className="flex-1 px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+              className="glass flex-1 rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
             />
             <button
               type="button"
               onClick={setNow}
-              className="px-4 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-medium transition-all">
+              className="rounded-xl bg-gray-200 px-4 py-3 font-medium transition-all hover:bg-gray-300">
               &#x1F550; Teraz
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128197;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128197;</span>
             Planowana data zwrotu:
           </label>
           <input
@@ -177,14 +177,14 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.returnDate}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
           />
         </div>
 
         {preview && (
-          <div className="glass border border-blue-200 rounded-xl p-4">
-            <h4 className="font-bold text-blue-800 mb-2 flex items-center">
-              <span className="text-lg mr-2">&#128181;</span>
+          <div className="glass rounded-xl border border-blue-200 p-4">
+            <h4 className="mb-2 flex items-center font-bold text-blue-800">
+              <span className="mr-2 text-lg">&#128181;</span>
               Podgląd kosztów:
             </h4>
             <div className="space-y-1">
@@ -194,7 +194,7 @@ export default function RentForm({ onRentalSuccess }) {
               </p>
               <p className="text-blue-700">
                 <span className="font-medium">Łączny koszt:</span>
-                <span className="text-xl font-bold ml-2">{preview.cost.toFixed(2)} PLN</span>
+                <span className="ml-2 text-xl font-bold">{preview.cost.toFixed(2)} PLN</span>
               </p>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function RentForm({ onRentalSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full winter-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-101 transition-all duration-200 text-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+          className="dark-gradient w-full transform cursor-pointer rounded-xl px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
           {loading ? <>Przetwarzanie...</> : <>Wypożycz sprzęt</>}
         </button>
       </form>

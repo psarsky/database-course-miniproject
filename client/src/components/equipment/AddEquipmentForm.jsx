@@ -55,16 +55,16 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
   ];
 
   return (
-    <div className="ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
-      <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <span className="text-2xl mr-2">&#127935;</span>
+    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+      <h3 className="mb-4 flex items-center text-2xl font-bold text-gray-800">
+        <span className="mr-2 text-2xl">&#127935;</span>
         Dodaj nowy sprzęt
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#x1F3F7;&#xFE0F;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#x1F3F7;&#xFE0F;</span>
             Nazwa sprzętu:
           </label>
           <input
@@ -74,13 +74,13 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             value={form.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128194;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128194;</span>
             Typ sprzętu:
           </label>
           <select
@@ -88,7 +88,7 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             value={form.type}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200">
             <option value="">Wybierz typ sprzętu...</option>
             {equipmentTypes.map((type) => (
               <option key={type.value} value={type.value}>
@@ -99,8 +99,8 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128181;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128181;</span>
             Cena za dobę (PLN):
           </label>
           <input
@@ -112,20 +112,20 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             min="0"
             step="0.01"
             required
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200"
           />
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-            <span className="text-lg mr-2">&#9888;&#65039;</span>
+          <div className="rounded-xl border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+            <span className="mr-2 text-lg">&#9888;&#65039;</span>
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="w-full winter-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-101 transition-all duration-200 text-lg cursor-pointer">
+          className="dark-gradient w-full transform cursor-pointer rounded-xl px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg">
           Dodaj sprzęt
         </button>
       </form>

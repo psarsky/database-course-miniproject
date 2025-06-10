@@ -53,22 +53,22 @@ export default function ReturnForm({ onReturnSuccess }) {
   };
 
   return (
-    <div className="ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
-      <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <span className="text-2xl mr-2">&#x1F501;</span>
+    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+      <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
+        <span className="mr-2 text-2xl">&#x1F501;</span>
         Zwrot sprzętu
       </h3>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128203;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128203;</span>
             Wybierz wypożyczenie do zwrotu:
           </label>
           <select
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="glass w-full rounded-xl border border-gray-300 px-4 py-3 transition-all outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-200">
             <option value="">-- wybierz wypożyczenie --</option>
             {activeRentals.length === 0 ? (
               <option disabled>Brak aktywnych wypożyczeń</option>
@@ -84,9 +84,9 @@ export default function ReturnForm({ onReturnSuccess }) {
         </div>
 
         {selectedRental && (
-          <div className="glass rounded-xl p-4 border border-blue-200">
-            <h4 className="font-bold text-blue-800 mb-3 flex items-center">
-              <span className="text-lg mr-2">&#8505;&#65039;</span>
+          <div className="glass rounded-xl border border-blue-200 p-4">
+            <h4 className="mb-3 flex items-center font-bold text-blue-800">
+              <span className="mr-2 text-lg">&#8505;&#65039;</span>
               Szczegóły wypożyczenia:
             </h4>
             <div className="space-y-2 text-sm">
@@ -121,13 +121,13 @@ export default function ReturnForm({ onReturnSuccess }) {
         <button
           onClick={handleReturn}
           disabled={!selected || loading}
-          className="w-full winter-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-101 transition-all duration-200 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer">
+          className="dark-gradient w-full transform cursor-pointer rounded-xl px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg disabled:transform-none disabled:cursor-not-allowed disabled:opacity-50">
           {loading ? <>Przetwarzanie zwrotu...</> : <>Zwróć sprzęt</>}
         </button>
 
         {activeRentals.length === 0 && (
-          <div className="text-center py-4 text-gray-500">
-            <span className="text-4xl block mb-2">&#10052;&#65039;</span>
+          <div className="py-4 text-center text-gray-500">
+            <span className="mb-2 block text-4xl">&#10052;&#65039;</span>
             <p>Brak aktywnych wypożyczeń do zwrotu</p>
           </div>
         )}

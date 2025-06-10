@@ -79,25 +79,25 @@ export default function RentalList({ userId, refresh, onUpdate }) {
   };
 
   return (
-    <div className="glass ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
-      <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-        <span className="text-2xl mr-2">&#128203;</span>
+    <div className="glass light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+      <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
+        <span className="mr-2 text-2xl">&#128203;</span>
         Historia wypożyczeń
-        <span className="ml-auto bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+        <span className="ml-auto rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
           {rentals.length} {rentals.length === 1 ? "pozycja" : "pozycji"}
         </span>
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128100;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128100;</span>
             Filtruj po kliencie:
           </label>
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="glass w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
             <option value="">-- Wszyscy klienci --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
@@ -108,14 +108,14 @@ export default function RentalList({ userId, refresh, onUpdate }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#x26F7;&#xFE0F;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#x26F7;&#xFE0F;</span>
             Filtruj po sprzęcie:
           </label>
           <select
             value={selectedEquipment}
             onChange={(e) => setSelectedEquipment(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="glass w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
             <option value="">-- Wszystkie sprzęty --</option>
             {equipmentList.map((eq) => (
               <option key={eq._id} value={eq._id}>
@@ -126,14 +126,14 @@ export default function RentalList({ userId, refresh, onUpdate }) {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            <span className="text-lg mr-1">&#128202;</span>
+          <label className="mb-2 block text-sm font-semibold text-gray-700">
+            <span className="mr-1 text-lg">&#128202;</span>
             Status:
           </label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="glass w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
             <option value="all">&#128203; Wszystkie</option>
             <option value="active">&#128994; Aktywne</option>
             <option value="returned">&#9989; Zwrócone</option>
@@ -143,8 +143,8 @@ export default function RentalList({ userId, refresh, onUpdate }) {
       </div>
 
       {rentals.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <span className="text-4xl block mb-2">&#10052;&#65039;</span>
+        <div className="py-8 text-center text-gray-500">
+          <span className="mb-2 block text-4xl">&#10052;&#65039;</span>
           <p className="text-lg">Brak wypożyczeń do wyświetlenia</p>
           <p className="text-sm">Spróbuj zmienić filtry lub dodać nowe wypożyczenie!</p>
         </div>
@@ -153,19 +153,19 @@ export default function RentalList({ userId, refresh, onUpdate }) {
           {rentals.map((r) => (
             <div
               key={r._id}
-              className={`glass rounded-xl p-4 border transition-all duration-200 hover:shadow-md ${
+              className={`glass rounded-xl border p-4 transition-all duration-200 hover:shadow-md ${
                 r.returned
                   ? "border-green-200"
                   : isOverdue(r.returnDate, r.returned)
-                  ? "border-red-300 bg-red-50"
-                  : "border-blue-200"
+                    ? "border-red-300 bg-red-50"
+                    : "border-blue-200"
               }`}>
-              <div className="flex items-start justify-between mb-3">
+              <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="text-2xl">{getEquipmentEmoji(r.equipment?.type)}</div>
                   <div>
                     <h4 className="font-bold text-gray-800">{r.equipment?.name || "Brak danych"}</h4>
-                    <p className="text-gray-600 text-sm">&#128100; {r.user?.name || "Brak danych"}</p>
+                    <p className="text-sm text-gray-600">&#128100; {r.user?.name || "Brak danych"}</p>
                   </div>
                 </div>
 
@@ -181,12 +181,12 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                   </button>
                   <div className="flex flex-col items-end space-y-1">
                     <div
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`rounded-full px-3 py-1 text-xs font-medium ${
                         r.returned
                           ? "bg-green-100 text-green-800"
                           : isOverdue(r.returnDate, r.returned)
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-blue-100 text-blue-800"
                       }`}>
                       {r.returned ? (
                         <>&#9989; Zwrócono</>
@@ -204,7 +204,7 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Wypożyczenie:</span>
@@ -230,7 +230,7 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-400">ID: {r._id}</div>
+              <div className="mt-3 border-t border-gray-200 pt-3 text-xs text-gray-400">ID: {r._id}</div>
             </div>
           ))}
         </div>
