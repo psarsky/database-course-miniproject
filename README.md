@@ -1,4 +1,4 @@
-# System wypożyczalni sprzętu narciarskiego
+# SnowPoint - system wypożyczalni sprzętu narciarskiego
 
 ## Autorzy
 
