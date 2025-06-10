@@ -6,14 +6,22 @@ export default function RentalList({ userId, refresh }) {
   const [users, setUsers] = useState([]);
   const [equipmentList, setEquipmentList] = useState([]);
   const [selectedEquipment, setSelectedEquipment] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all"); // all, active, returned
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/users")
-      .then((res) => setUsers(res.data))
-      .catch(() => setUsers([]));
-    fetch("http://localhost:5000/api/equipment")
-      .then((res) => setEquipmentList(res.data))
-      .catch(() => setEquipmentList([]));
+    Promise.all([
+      fetch("http://localhost:5000/api/users").then((res) => res.json()),
+      fetch("http://localhost:5000/api/equipment").then((res) => res.json()),
+    ])
+      .then(([users, equipment]) => {
+        setUsers(users);
+        setEquipmentList(equipment);
+      })
+      .catch((err) => {
+        console.error("Błąd podczas pobierania danych:", err);
+        setUsers([]);
+        setEquipmentList([]);
+      });
   }, []);
 
   useEffect(() => {
@@ -21,84 +29,195 @@ export default function RentalList({ userId, refresh }) {
     if (selectedUser) {
       url = `http://localhost:5000/api/rentals/user/${selectedUser}`;
     }
+
     fetch(url)
-      .then((res) => {
-        let filtered = res.data;
+      .then((res) => res.json())
+      .then((data) => {
+        let filtered = data;
+
+        // Filter by equipment
         if (selectedEquipment) {
           filtered = filtered.filter((r) => r.equipment && r.equipment._id === selectedEquipment);
         }
+
+        // Filter by status
+        if (statusFilter === "active") {
+          filtered = filtered.filter((r) => !r.returned && !isOverdue(r.returnDate, r.returned));
+        } else if (statusFilter === "returned") {
+          filtered = filtered.filter((r) => r.returned);
+        } else if (statusFilter === "overdue") {
+          filtered = filtered.filter((r) => isOverdue(r.returnDate, r.returned));
+        }
+
         setRentals(filtered);
       })
-      .catch(() => setRentals([]));
-  }, [selectedUser, selectedEquipment, refresh]);
+      .catch((err) => {
+        console.error("Błąd podczas pobierania wypożyczeń:", err);
+        setRentals([]);
+      });
+  }, [selectedUser, selectedEquipment, statusFilter, refresh]);
+
+  const getEquipmentEmoji = (type) => {
+    const emojiMap = {
+      narty: "&#127935;",
+      buty: "&#128095;",
+      kijki: "&#x26F7;&#xFE0F;",
+      snowboard: "&#127938;",
+      kask: "&#x26D1;&#xFE0F;",
+      gogle: "&#x1F97D;",
+    };
+    return <span dangerouslySetInnerHTML={{ __html: emojiMap[type] || "&#127935;" }} />;
+  };
+
+  const isOverdue = (returnDate, returned) => {
+    if (returned) return false;
+    return new Date(returnDate) < new Date();
+  };
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">
-        Wypożyczenia {selectedUser ? "użytkownika" : "wszystkich użytkowników"}
-      </h2>
-      <div className="mb-4 flex gap-4 items-center">
+    <div className="glass ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
+      <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <span className="text-2xl mr-2">&#128203;</span>
+        Historia wypożyczeń
+        <span className="ml-auto bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+          {rentals.length} {rentals.length === 1 ? "pozycja" : "pozycji"}
+        </span>
+      </h3>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div>
-          <label>Filtruj po użytkowniku: </label>
-          <select value={selectedUser} onChange={(e) => setSelectedUser(e.target.value)}>
-            <option value="">-- Wszyscy użytkownicy --</option>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#128100;</span>
+            Filtruj po kliencie:
+          </label>
+          <select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            <option value="">-- Wszyscy klienci --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
-                {u.name} ({u.email})
+                &#128100; {u.name}
               </option>
             ))}
           </select>
         </div>
+
         <div>
-          <label>Filtruj po sprzęcie: </label>
-          <select value={selectedEquipment} onChange={(e) => setSelectedEquipment(e.target.value)}>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#x26F7;&#xFE0F;</span>
+            Filtruj po sprzęcie:
+          </label>
+          <select
+            value={selectedEquipment}
+            onChange={(e) => setSelectedEquipment(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
             <option value="">-- Wszystkie sprzęty --</option>
             {equipmentList.map((eq) => (
               <option key={eq._id} value={eq._id}>
-                {eq.name} ({eq.type})
+                {getEquipmentEmoji(eq.type)} {eq.name}
               </option>
             ))}
           </select>
         </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#128202;</span>
+            Status:
+          </label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            <option value="all">&#128203; Wszystkie</option>
+            <option value="active">&#128994; Aktywne</option>
+            <option value="returned">&#9989; Zwrócone</option>
+            <option value="overdue">&#9888;&#65039; Zaległe</option>
+          </select>
+        </div>
       </div>
-      <ul className="space-y-2">
-        {rentals.length === 0 && <li>Brak wypożyczeń do wyświetlenia.</li>}
-        {rentals.map((r) => (
-          <li key={r._id} className="border p-2 rounded">
-            <div>
-              <strong>ID:</strong> {r._id}
+
+      {rentals.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <span className="text-4xl block mb-2">&#10052;&#65039;</span>
+          <p className="text-lg">Brak wypożyczeń do wyświetlenia</p>
+          <p className="text-sm">Spróbuj zmienić filtry lub dodać nowe wypożyczenie!</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {rentals.map((r) => (
+            <div
+              key={r._id}
+              className={`glass rounded-xl p-4 border transition-all duration-200 hover:shadow-md ${
+                r.returned
+                  ? "border-green-200"
+                  : isOverdue(r.returnDate, r.returned)
+                  ? "border-red-300 bg-red-50"
+                  : "border-blue-200"
+              }`}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">{getEquipmentEmoji(r.equipment?.type)}</div>
+                  <div>
+                    <h4 className="font-bold text-gray-800">{r.equipment?.name || "Brak danych"}</h4>
+                    <p className="text-gray-600 text-sm">&#128100; {r.user?.name || "Brak danych"}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end space-y-1">
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      r.returned
+                        ? "bg-green-100 text-green-800"
+                        : isOverdue(r.returnDate, r.returned)
+                        ? "bg-red-100 text-red-800"
+                        : "bg-blue-100 text-blue-800"
+                    }`}>
+                    {r.returned ? (
+                      <>&#9989; Zwrócono</>
+                    ) : isOverdue(r.returnDate, r.returned) ? (
+                      <>&#9888;&#65039; Zaległe</>
+                    ) : (
+                      <>&#128994; Aktywne</>
+                    )}
+                  </div>
+
+                  {r.cost && <div className="text-sm font-bold text-green-600">&#128181; {r.cost.toFixed(2)} PLN</div>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Wypożyczenie:</span>
+                    <span className="font-medium">&#128197; {new Date(r.rentalDate).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Planowany zwrot:</span>
+                    <span className="font-medium">&#128197; {new Date(r.returnDate).toLocaleDateString()}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Typ sprzętu:</span>
+                    <span className="font-medium capitalize">{r.equipment?.type || "-"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Status sprzętu:</span>
+                    <span className={`font-medium ${r.equipment?.available ? "text-green-600" : "text-red-600"}`}>
+                      {r.equipment?.available ? <>&#9989; Dostępny</> : <>&#128683; Niedostępny</>}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-400">ID: {r._id}</div>
             </div>
-            <div>
-              <strong>Użytkownik:</strong> {r.user?.name || "Brak danych"}{" "}
-              <span className="text-xs text-gray-500">[{r.user?._id || "brak id"}]</span>
-            </div>
-            <div>
-              <strong>Sprzęt:</strong> {r.equipment?.name || "Brak danych"}{" "}
-              <span className="text-xs text-gray-500">[{r.equipment?._id || "brak id"}]</span>
-            </div>
-            <div>
-              <strong>Status sprzętu:</strong>{" "}
-              {typeof r.equipment?.available === "boolean"
-                ? r.equipment.available
-                  ? "Dostępny"
-                  : "Niedostępny"
-                : "Brak danych"}
-            </div>
-            <div>
-              <strong>Od:</strong> {new Date(r.rentalDate).toLocaleString()}
-            </div>
-            <div>
-              <strong>Do:</strong> {new Date(r.returnDate).toLocaleString()}
-            </div>
-            <div>
-              <strong>Status:</strong> {r.returned ? "Zwrócono" : "Wypożyczony"}
-            </div>
-            <div>
-              <strong>Koszt wypożyczenia:</strong> {typeof r.cost === "number" ? r.cost.toFixed(2) + " PLN" : "-"}
-            </div>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

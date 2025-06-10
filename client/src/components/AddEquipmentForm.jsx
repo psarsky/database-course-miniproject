@@ -31,43 +31,104 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
           pricePerDay: Number(form.pricePerDay),
         }),
       });
-      onEquipmentAdded(res.data);
-      setForm({ name: "", type: "", pricePerDay: "" });
+
+      if (res.ok) {
+        const newEquipment = await res.json();
+        onEquipmentAdded(newEquipment);
+        setForm({ name: "", type: "", pricePerDay: "" });
+      } else {
+        throw new Error("Błąd przy dodawaniu sprzętu");
+      }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.error || "Błąd przy dodawaniu sprzętu");
+      setError(err.message || "Błąd przy dodawaniu sprzętu");
     }
   };
 
+  const equipmentTypes = [
+    { value: "narty", label: "Narty" },
+    { value: "buty", label: "Buty narciarskie" },
+    { value: "kijki", label: "Kijki narciarskie" },
+    { value: "snowboard", label: "Snowboard" },
+    { value: "kask", label: "Kask" },
+    { value: "gogle", label: "Gogle" },
+  ];
+
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded space-y-2">
-      <h2 className="text-xl font-bold">Dodaj nowy sprzęt</h2>
+    <div className="ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
+      <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+        <span className="text-2xl mr-2">&#127935;</span>
+        Dodaj nowy sprzęt
+      </h3>
 
-      <input type="text" name="name" placeholder="Nazwa sprzętu" value={form.name} onChange={handleChange} required />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#x1F3F7;&#xFE0F;</span>
+            Nazwa sprzętu:
+          </label>
+          <input
+            type="text"
+            name="name"
+            placeholder="np. Narty Rossignol Hero Elite"
+            value={form.name}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+          />
+        </div>
 
-      <select name="type" value={form.type} onChange={handleChange} required>
-        <option value="">Wybierz typ sprzętu</option>
-        <option value="narty">narty</option>
-        <option value="buty">buty</option>
-        <option value="kijki">kijki</option>
-      </select>
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#128194;</span>
+            Typ sprzętu:
+          </label>
+          <select
+            name="type"
+            value={form.type}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            <option value="">Wybierz typ sprzętu...</option>
+            {equipmentTypes.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <input
-        type="number"
-        name="pricePerDay"
-        placeholder="Cena za dobę (PLN)"
-        value={form.pricePerDay}
-        onChange={handleChange}
-        min="0"
-        step="0.01"
-        required
-      />
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <span className="text-lg mr-1">&#128181;</span>
+            Cena za dobę (PLN):
+          </label>
+          <input
+            type="number"
+            name="pricePerDay"
+            placeholder="0.00"
+            value={form.pricePerDay}
+            onChange={handleChange}
+            min="0"
+            step="0.01"
+            required
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+          />
+        </div>
 
-      {error && <p className="text-red-600">{error}</p>}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
+            <span className="text-lg mr-2">&#9888;&#65039;</span>
+            {error}
+          </div>
+        )}
 
-      <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-        Dodaj sprzęt
-      </button>
-    </form>
+        <button
+          type="submit"
+          className="w-full winter-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-101 transition-all duration-200 text-lg cursor-pointer">
+          Dodaj sprzęt
+        </button>
+      </form>
+    </div>
   );
 }
