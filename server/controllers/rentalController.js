@@ -158,16 +158,64 @@ const getRentalById = async (req, res) => {
 
 // Update rental data by ID
 const updateRental = async (req, res) => {
+  const session = await startSession();
+  session.startTransaction();
+
   try {
     const { user, equipment, rentalDate, returnDate, returned } = req.body;
+    
+    // Get the current rental to check if equipment is changing
+    const currentRental = await Rental.findById(req.params.id).session(session);
+    if (!currentRental) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(404).json({ error: "Wypożyczenie nie znalezione" });
+    }
+
+    // If equipment is changing, handle availability updates
+    if (equipment && equipment !== currentRental.equipment.toString()) {
+      // Make old equipment available
+      const oldEquipment = await Equipment.findById(currentRental.equipment).session(session);
+      if (oldEquipment) {
+        oldEquipment.available = true;
+        await oldEquipment.save({ session });
+      }
+
+      // Make new equipment unavailable
+      const newEquipment = await Equipment.findById(equipment).session(session);
+      if (!newEquipment) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(404).json({ error: "Nowy sprzęt nie został znaleziony" });
+      }
+      if (!newEquipment.available) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({ error: "Nowy sprzęt jest niedostępny" });
+      }
+      newEquipment.available = false;
+      await newEquipment.save({ session });
+    }    const eq = await Equipment.findById(equipment).session(session);
+
+    const start = new Date(rentalDate);
+    const end = new Date(returnDate);
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const days = Math.ceil((end - start) / msPerDay) || 1;
+    const cost = days * eq.pricePerDay;
+
     const updated = await Rental.findByIdAndUpdate(
       req.params.id,
-      { user, equipment, rentalDate, returnDate, returned },
-      { new: true }
+      { user, equipment, rentalDate, returnDate, returned, cost },
+      { new: true, session }
     );
-    if (!updated) return res.status(404).json({ error: "Wypożyczenie nie znalezione" });
+
+    await session.commitTransaction();
+    session.endSession();
+    
     res.json(updated);
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     res.status(500).json({ error: error.message });
   }
 };

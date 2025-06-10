@@ -3,8 +3,13 @@ import User from "../models/User.js";
 // Create a new user
 const createUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const user = new User({ name, email });
+    const { name, email, phone } = req.body;
+    // Only include phone if it's not empty
+    const userData = { name, email };
+    if (phone && phone.trim() !== "") {
+      userData.phone = phone.trim();
+    }
+    const user = new User(userData);
     const savedUser = await user.save();
     res.status(201).json(savedUser);
   } catch (error) {
@@ -36,8 +41,16 @@ const getUserById = async (req, res) => {
 // Update user data by ID
 const updateUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, { name, email }, { new: true });
+    const { name, email, phone } = req.body;
+    // Only include phone if it's not empty
+    const updateData = { name, email };
+    if (phone && phone.trim() !== "") {
+      updateData.phone = phone.trim();
+    } else {
+      // If phone is empty, remove it from the document
+      updateData.$unset = { phone: "" };
+    }
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedUser) return res.status(404).json({ error: "User not found." });
     res.json(updatedUser);
   } catch (error) {

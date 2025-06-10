@@ -34,12 +34,12 @@ app.get("/", (req, res) => {
     console.log("Attempting to connect to MongoDB with URI:", mongoUri);
     await connect(mongoUri);
 
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
     app.listen(port, () => {
-      console.log(`🚀 Server running on http://localhost:${port}`);
+      console.log(`Server running on http://localhost:${port}`);
     });
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("MongoDB connection error:", err);
     process.exit(1);
   }
 })();
