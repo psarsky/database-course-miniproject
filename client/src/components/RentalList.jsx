@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
+import EditRentalModal from "./EditRentalModal";
 
-export default function RentalList({ userId, refresh }) {
+export default function RentalList({ userId, refresh, onUpdate }) {
   const [rentals, setRentals] = useState([]);
   const [selectedUser, setSelectedUser] = useState(userId || "");
   const [users, setUsers] = useState([]);
+
   const [equipmentList, setEquipmentList] = useState([]);
   const [selectedEquipment, setSelectedEquipment] = useState("");
   const [statusFilter, setStatusFilter] = useState("all"); // all, active, returned
+  const [editingRental, setEditingRental] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -93,7 +97,7 @@ export default function RentalList({ userId, refresh }) {
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
             <option value="">-- Wszyscy klienci --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
@@ -111,7 +115,7 @@ export default function RentalList({ userId, refresh }) {
           <select
             value={selectedEquipment}
             onChange={(e) => setSelectedEquipment(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
             <option value="">-- Wszystkie sprzęty --</option>
             {equipmentList.map((eq) => (
               <option key={eq._id} value={eq._id}>
@@ -129,7 +133,7 @@ export default function RentalList({ userId, refresh }) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
+            className="w-full px-3 py-2 rounded-xl outline-none border border-gray-300 focus:ring-2 focus:ring-blue-200 glass text-sm">
             <option value="all">&#128203; Wszystkie</option>
             <option value="active">&#128994; Aktywne</option>
             <option value="returned">&#9989; Zwrócone</option>
@@ -165,25 +169,38 @@ export default function RentalList({ userId, refresh }) {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-end space-y-1">
-                  <div
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      r.returned
-                        ? "bg-green-100 text-green-800"
-                        : isOverdue(r.returnDate, r.returned)
-                        ? "bg-red-100 text-red-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}>
-                    {r.returned ? (
-                      <>&#9989; Zwrócono</>
-                    ) : isOverdue(r.returnDate, r.returned) ? (
-                      <>&#9888;&#65039; Zaległe</>
-                    ) : (
-                      <>&#128994; Aktywne</>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => {
+                      setEditingRental(r);
+                      setIsModalOpen(true);
+                    }}
+                    className="cursor-pointer"
+                    title="Edytuj wypożyczenie">
+                    <span className="text-lg text-gray-600">&#x2699;&#xFE0F;</span>
+                  </button>
+                  <div className="flex flex-col items-end space-y-1">
+                    <div
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        r.returned
+                          ? "bg-green-100 text-green-800"
+                          : isOverdue(r.returnDate, r.returned)
+                          ? "bg-red-100 text-red-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}>
+                      {r.returned ? (
+                        <>&#9989; Zwrócono</>
+                      ) : isOverdue(r.returnDate, r.returned) ? (
+                        <>&#9888;&#65039; Zaległe</>
+                      ) : (
+                        <>&#128994; Aktywne</>
+                      )}
+                    </div>
+
+                    {r.cost && (
+                      <div className="text-sm font-bold text-green-600">&#128181; {r.cost.toFixed(2)} PLN</div>
                     )}
                   </div>
-
-                  {r.cost && <div className="text-sm font-bold text-green-600">&#128181; {r.cost.toFixed(2)} PLN</div>}
                 </div>
               </div>
 
@@ -218,6 +235,20 @@ export default function RentalList({ userId, refresh }) {
           ))}
         </div>
       )}
+
+      <EditRentalModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        rental={editingRental}
+        onUpdate={() => {
+          onUpdate?.();
+          setEditingRental(null);
+        }}
+        onDelete={() => {
+          onUpdate?.();
+          setEditingRental(null);
+        }}
+      />
     </div>
   );
 }

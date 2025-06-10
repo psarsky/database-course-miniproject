@@ -11,22 +11,26 @@ export default function App() {
   const [users, setUsers] = useState([]);
   const [equipment, setEquipment] = useState([]);
   const [rentalRefresh, setRentalRefresh] = useState(0);
+  const [userRefresh, setUserRefresh] = useState(0);
+  const [equipmentRefresh, setEquipmentRefresh] = useState(0);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/users")
       .then((res) => res.json())
       .then((data) => setUsers(data))
       .catch((err) => console.error(err));
-  }, []);
+  }, [userRefresh]);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/equipment")
       .then((res) => res.json())
       .then((data) => setEquipment(data))
       .catch((err) => console.error(err));
-  }, []);
+  }, [equipmentRefresh]);
 
   const refreshRentals = () => setRentalRefresh((r) => r + 1);
+  const refreshUsers = () => setUserRefresh((r) => r + 1);
+  const refreshEquipment = () => setEquipmentRefresh((r) => r + 1);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
@@ -50,7 +54,7 @@ export default function App() {
           </h2>
           <AddUserForm onUserAdded={(newUser) => setUsers((prev) => [...prev, newUser])} />
           <div className="mt-8">
-            <UserList users={users} />
+            <UserList users={users} onUpdate={refreshUsers} />
           </div>
         </section>
 
@@ -62,7 +66,7 @@ export default function App() {
           </h2>
           <AddEquipmentForm onEquipmentAdded={(newItem) => setEquipment((prev) => [...prev, newItem])} />
           <div className="mt-8">
-            <EquipmentList equipment={equipment} />
+            <EquipmentList equipment={equipment} onUpdate={refreshEquipment} />
           </div>
         </section>
 
@@ -79,7 +83,7 @@ export default function App() {
             <div>
               <ReturnForm onReturnSuccess={refreshRentals} />
               <div className="mt-8">
-                <RentalList refresh={rentalRefresh} />
+                <RentalList refresh={rentalRefresh} onUpdate={refreshRentals} />
               </div>
             </div>
           </div>

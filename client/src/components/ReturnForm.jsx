@@ -68,7 +68,7 @@ export default function ReturnForm({ onReturnSuccess }) {
           <select
             value={selected}
             onChange={(e) => setSelected(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
             <option value="">-- wybierz wypożyczenie --</option>
             {activeRentals.length === 0 ? (
               <option disabled>Brak aktywnych wypożyczeń</option>
@@ -122,7 +122,7 @@ export default function ReturnForm({ onReturnSuccess }) {
           onClick={handleReturn}
           disabled={!selected || loading}
           className="w-full winter-gradient text-white font-bold py-4 px-6 rounded-xl hover:shadow-lg transform hover:scale-101 transition-all duration-200 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none cursor-pointer">
-          {loading ? <>Przetwarzanie zwrotu...</> : <>Zwróć Sprzęt</>}
+          {loading ? <>Przetwarzanie zwrotu...</> : <>Zwróć sprzęt</>}
         </button>
 
         {activeRentals.length === 0 && (

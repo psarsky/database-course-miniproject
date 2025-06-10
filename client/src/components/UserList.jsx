@@ -1,4 +1,10 @@
-export default function UserList({ users }) {
+import { useState } from "react";
+import EditUserModal from "./EditUserModal";
+
+export default function UserList({ users, onUpdate }) {
+  const [editingUser, setEditingUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="ice-gradient rounded-2xl p-6 shadow-lg border border-white/30">
       <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
@@ -40,15 +46,40 @@ export default function UserList({ users }) {
                     )}
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-400">ID: {user._id}</div>
-                  <div className="text-xs text-gray-500 mt-1">Klient #{index + 1}</div>
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={() => {
+                      setEditingUser(user);
+                      setIsModalOpen(true);
+                    }}
+                    className="cursor-pointer"
+                    title="Edytuj klienta">
+                    <span className="text-lg text-gray-600">&#x2699;&#xFE0F;</span>
+                  </button>
+                  <div className="text-right">
+                    <div className="mt-3 pt-3 border-t border-gray-200 text-xs text-gray-400">ID: {user._id}</div>
+                    <div className="text-xs text-gray-500 mt-1">Klient #{index + 1}</div>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <EditUserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        user={editingUser}
+        onUpdate={() => {
+          onUpdate?.();
+          setEditingUser(null);
+        }}
+        onDelete={() => {
+          onUpdate?.();
+          setEditingUser(null);
+        }}
+      />
     </div>
   );
 }

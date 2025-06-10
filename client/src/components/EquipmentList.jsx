@@ -1,7 +1,10 @@
 import { useState } from "react";
+import EditEquipmentModal from "./EditEquipmentModal";
 
-export default function EquipmentList({ equipment }) {
+export default function EquipmentList({ equipment, onUpdate }) {
   const [filter, setFilter] = useState("all"); // all, available, rented
+  const [editingEquipment, setEditingEquipment] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredEquipment = equipment.filter((eq) => {
     if (filter === "available") return eq.available;
@@ -84,11 +87,22 @@ export default function EquipmentList({ equipment }) {
                     <p className="text-gray-600 text-sm capitalize">{eq.type}</p>
                   </div>
                 </div>
-                <div
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    eq.available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                  }`}>
-                  {eq.available ? <>&#9989; Dostępny</> : <>&#128683; Wypożyczony</>}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => {
+                      setEditingEquipment(eq);
+                      setIsModalOpen(true);
+                    }}
+                    className="cursor-pointer"
+                    title="Edytuj sprzęt">
+                    <span className="text-lg text-gray-600">&#x2699;&#xFE0F;</span>
+                  </button>
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      eq.available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                    }`}>
+                    {eq.available ? <>&#9989; Dostępny</> : <>&#128683; Wypożyczony</>}
+                  </div>
                 </div>
               </div>
 
@@ -106,6 +120,20 @@ export default function EquipmentList({ equipment }) {
           ))}
         </div>
       )}
+
+      <EditEquipmentModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        equipment={editingEquipment}
+        onUpdate={() => {
+          onUpdate?.();
+          setEditingEquipment(null);
+        }}
+        onDelete={() => {
+          onUpdate?.();
+          setEditingEquipment(null);
+        }}
+      />
     </div>
   );
 }

@@ -74,7 +74,7 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             value={form.name}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
           />
         </div>
 
@@ -88,7 +88,7 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             value={form.type}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
             <option value="">Wybierz typ sprzętu...</option>
             {equipmentTypes.map((type) => (
               <option key={type.value} value={type.value}>
@@ -112,7 +112,7 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
             min="0"
             step="0.01"
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
           />
         </div>
 

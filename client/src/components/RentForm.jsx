@@ -110,7 +110,7 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.userId}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
             <option value="">-- wybierz klienta --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
@@ -130,7 +130,7 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.equipmentId}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass">
             <option value="">-- wybierz sprzęt --</option>
             {equipmentList
               .filter((eq) => eq.available)
@@ -155,7 +155,7 @@ export default function RentForm({ onRentalSuccess }) {
               value={form.rentalDate}
               onChange={handleChange}
               required
-              className="flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+              className="flex-1 px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
             />
             <button
               type="button"
@@ -177,7 +177,7 @@ export default function RentForm({ onRentalSuccess }) {
             value={form.returnDate}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
+            className="w-full px-4 py-3 rounded-xl outline-none border border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-400 transition-all glass"
           />
         </div>
 
