@@ -44,18 +44,6 @@ export default function RentForm({ onRentalSuccess }) {
     return { days, cost };
   };
 
-  const getEquipmentEmoji = (type) => {
-    const emojiMap = {
-      narty: "&#127935;",
-      buty: "&#128095;",
-      kijki: "&#x26F7;&#xFE0F;",
-      snowboard: "&#127938;",
-      kask: "&#x26D1;&#xFE0F;",
-      gogle: "&#x1F97D;",
-    };
-    return <span dangerouslySetInnerHTML={{ __html: emojiMap[type] || "&#127935;" }} />;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -93,16 +81,14 @@ export default function RentForm({ onRentalSuccess }) {
   const preview = getPricePreview();
 
   return (
-    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+    <div className="rounded-2xl border border-white/30 bg-[#88dfff] p-6 shadow-lg">
       <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
-        <span className="mr-2 text-2xl">&#x26F7;&#xFE0F;</span>
         Wypożycz Sprzęt
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128100;</span>
             Wybierz klienta:
           </label>
           <select
@@ -114,7 +100,7 @@ export default function RentForm({ onRentalSuccess }) {
             <option value="">-- wybierz klienta --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
-                &#128100; {u.name} ({u.email})
+                {u.name} ({u.email})
               </option>
             ))}
           </select>
@@ -122,7 +108,6 @@ export default function RentForm({ onRentalSuccess }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#127939;</span>
             Wybierz sprzęt:
           </label>
           <select
@@ -136,7 +121,7 @@ export default function RentForm({ onRentalSuccess }) {
               .filter((eq) => eq.available)
               .map((eq) => (
                 <option key={eq._id} value={eq._id}>
-                  {getEquipmentEmoji(eq.type)} {eq.name} ({eq.type}) —{" "}
+                  {eq.name} ({eq.type}) —{" "}
                   {typeof eq.pricePerDay === "number" ? eq.pricePerDay.toFixed(2) + " PLN/doba" : "-"}
                 </option>
               ))}
@@ -145,7 +130,6 @@ export default function RentForm({ onRentalSuccess }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128197;</span>
             Data i godzina wypożyczenia:
           </label>
           <div className="flex gap-2">
@@ -160,15 +144,14 @@ export default function RentForm({ onRentalSuccess }) {
             <button
               type="button"
               onClick={setNow}
-              className="rounded-xl bg-gray-200 px-4 py-3 font-medium transition-all hover:bg-gray-300">
-              &#x1F550; Teraz
+              className="rounded-xl bg-blue-500 px-4 py-3 font-medium cursor-pointer text-white">
+              Teraz
             </button>
           </div>
         </div>
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128197;</span>
             Planowana data zwrotu:
           </label>
           <input
@@ -184,7 +167,6 @@ export default function RentForm({ onRentalSuccess }) {
         {preview && (
           <div className="glass rounded-xl border border-blue-200 p-4">
             <h4 className="mb-2 flex items-center font-bold text-blue-800">
-              <span className="mr-2 text-lg">&#128181;</span>
               Podgląd kosztów:
             </h4>
             <div className="space-y-1">
@@ -203,7 +185,7 @@ export default function RentForm({ onRentalSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="dark-gradient w-full transform cursor-pointer rounded-xl px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
+          className="w-full transform cursor-pointer rounded-xl bg-blue-500 px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
           {loading ? <>Przetwarzanie...</> : <>Wypożycz sprzęt</>}
         </button>
       </form>

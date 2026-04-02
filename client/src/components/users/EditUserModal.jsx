@@ -81,7 +81,6 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdate, onDelet
     <Modal isOpen={isOpen} onClose={onClose} title="Edytuj klienta">
       {showDeleteConfirm ? (
         <div className="text-center">
-          <div className="mb-4 text-6xl">&#9888;&#65039;</div>
           <h3 className="mb-4 text-xl font-bold">Potwierdź usunięcie</h3>
           <p className="mb-6 text-gray-600">
             Czy na pewno chcesz usunąć klienta <strong>{user.name}</strong>?
@@ -147,14 +146,12 @@ export default function EditUserModal({ isOpen, onClose, user, onUpdate, onDelet
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
               className="flex-1 cursor-pointer rounded-xl bg-red-500 px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-red-600">
-              <span className="mr-2">&#128465;</span>
               Usuń klienta
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="dark-gradient flex-1 cursor-pointer rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
-              <span className="mr-2">&#128190;</span>
+              className="flex-1 cursor-pointer rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
               {isLoading ? "Zapisywanie..." : "Zapisz zmiany"}
             </button>
           </div>

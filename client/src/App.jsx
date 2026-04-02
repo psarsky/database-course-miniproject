@@ -37,9 +37,9 @@ export default function App() {
       {/* Main content */}
       <div className="relative z-10">
         {/* Header */}
-        <header className="glass m-4 mb-8 rounded-b-3xl p-8 shadow-2xl">
+        <header className="glass m-4 mb-8 rounded-3xl p-8 shadow-2xl">
           <div className="text-center">
-            <h1 className="mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-800 bg-clip-text text-6xl font-bold text-transparent">
+            <h1 className="mb-4 bg-clip-text text-6xl font-bold">
               SnowPoint
             </h1>
             <p className="text-xl font-medium text-gray-700">Wypożyczalnia sprzętu narciarskiego</p>
@@ -49,7 +49,6 @@ export default function App() {
         {/* Users Section */}
         <section className="glass m-4 mb-8 rounded-3xl p-8 shadow-xl">
           <h2 className="mb-6 text-3xl font-bold text-gray-800">
-            <span className="mr-3 text-4xl">&#128101;</span>
             Zarządzanie klientami
           </h2>
           <AddUserForm onUserAdded={(newUser) => setUsers((prev) => [...prev, newUser])} />
@@ -61,7 +60,6 @@ export default function App() {
         {/* Equipment Section */}
         <section className="glass2 m-4 mb-8 rounded-3xl p-8 shadow-xl">
           <h2 className="mb-6 text-3xl font-bold text-gray-800">
-            <span className="mr-3 text-4xl">&#127935;</span>
             Zarządzanie sprzętem
           </h2>
           <AddEquipmentForm onEquipmentAdded={(newItem) => setEquipment((prev) => [...prev, newItem])} />
@@ -73,7 +71,6 @@ export default function App() {
         {/* Rentals Section */}
         <section className="glass2 m-4 rounded-3xl p-8 shadow-xl">
           <h2 className="mb-8 text-3xl font-bold text-gray-800">
-            <span className="mr-3 text-4xl">&#127956;&#65039;</span>
             Wypożyczenia
           </h2>
           <div className="grid grid-cols-1 gap-8 xl:grid-cols-2">

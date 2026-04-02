@@ -6,9 +6,8 @@ export default function UserList({ users, onUpdate }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+    <div className="rounded-2xl border border-white/30 bg-[#88dfff] p-6 shadow-lg">
       <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
-        <span className="mr-2 text-2xl">&#128203;</span>
         Lista klientów
         <span className="ml-auto rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
           {users.length} {users.length === 1 ? "klient" : "klientów"}
@@ -17,7 +16,6 @@ export default function UserList({ users, onUpdate }) {
 
       {users.length === 0 ? (
         <div className="py-8 text-center text-gray-500">
-          <span className="mb-2 block text-4xl">&#10052;&#65039;</span>
           <p className="text-lg">Brak klientów w bazie</p>
           <p className="text-sm">Dodaj pierwszego klienta aby rozpocząć!</p>
         </div>
@@ -35,12 +33,10 @@ export default function UserList({ users, onUpdate }) {
                   <div>
                     <h4 className="text-lg font-bold text-gray-800">{user.name}</h4>
                     <p className="flex items-center text-gray-600">
-                      <span className="mr-1 text-sm">&#128231;</span>
                       {user.email}
                     </p>
                     {user.phone && (
                       <p className="flex items-center text-sm text-gray-600">
-                        <span className="mr-1 text-sm">&#128241;</span>
                         {user.phone}
                       </p>
                     )}
@@ -54,7 +50,6 @@ export default function UserList({ users, onUpdate }) {
                     }}
                     className="cursor-pointer"
                     title="Edytuj klienta">
-                    <span className="text-lg text-gray-600">&#x2699;&#xFE0F;</span>
                   </button>
                   <div className="text-right">
                     <div className="mt-3 border-t border-gray-200 pt-3 text-xs text-gray-400">ID: {user._id}</div>

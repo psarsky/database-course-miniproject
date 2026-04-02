@@ -10,18 +10,6 @@ export default function EditEquipmentModal({ isOpen, onClose, equipment, onUpdat
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const getEquipmentEmoji = (type) => {
-    const emojiMap = {
-      narty: "&#127935;",
-      buty: "&#128095;",
-      kijki: "&#x26F7;&#xFE0F;",
-      snowboard: "&#127938;",
-      kask: "&#x26D1;&#xFE0F;",
-      gogle: "&#x1F97D;",
-    };
-    return <span dangerouslySetInnerHTML={{ __html: emojiMap[type] || "&#127935;" }} />;
-  };
-
   const equipmentTypes = [
     { value: "narty", label: "Narty" },
     { value: "buty", label: "Buty" },
@@ -105,7 +93,6 @@ export default function EditEquipmentModal({ isOpen, onClose, equipment, onUpdat
     <Modal isOpen={isOpen} onClose={onClose} title="Edytuj sprzęt">
       {showDeleteConfirm ? (
         <div className="text-center">
-          <div className="mb-4 text-6xl">&#9888;&#65039;</div>
           <h3 className="mb-4 text-xl font-bold">Potwierdź usunięcie</h3>
           <p className="mb-6 text-gray-600">
             Czy na pewno chcesz usunąć sprzęt <strong>{equipment.name}</strong>?
@@ -175,7 +162,6 @@ export default function EditEquipmentModal({ isOpen, onClose, equipment, onUpdat
           <div className="glass rounded-xl p-4">
             <h4 className="mb-2 font-semibold text-gray-700">Podgląd:</h4>
             <div className="flex items-center space-x-3">
-              <span className="text-2xl">{getEquipmentEmoji(formData.type)}</span>
               <div>
                 <div className="font-medium">{formData.name || "Nazwa sprzętu"}</div>
                 <div className="text-sm text-gray-600 capitalize">{formData.type}</div>
@@ -191,14 +177,12 @@ export default function EditEquipmentModal({ isOpen, onClose, equipment, onUpdat
               type="button"
               onClick={() => setShowDeleteConfirm(true)}
               className="flex-1 cursor-pointer rounded-xl bg-red-500 px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-red-600">
-              <span className="mr-2">&#128465;</span>
               Usuń sprzęt
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="dark-gradient flex-1 cursor-pointer rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
-              <span className="mr-2">&#128190;</span>
+              className="flex-1 cursor-pointer rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
               {isLoading ? "Zapisywanie..." : "Zapisz zmiany"}
             </button>
           </div>

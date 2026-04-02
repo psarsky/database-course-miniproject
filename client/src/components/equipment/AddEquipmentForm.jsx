@@ -55,16 +55,14 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
   ];
 
   return (
-    <div className="light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+    <div className="rounded-2xl border border-white/30 bg-[#88dfff] p-6 shadow-lg">
       <h3 className="mb-4 flex items-center text-2xl font-bold text-gray-800">
-        <span className="mr-2 text-2xl">&#127935;</span>
         Dodaj nowy sprzęt
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#x1F3F7;&#xFE0F;</span>
             Nazwa sprzętu:
           </label>
           <input
@@ -80,7 +78,6 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128194;</span>
             Typ sprzętu:
           </label>
           <select
@@ -100,7 +97,6 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128181;</span>
             Cena za dobę (PLN):
           </label>
           <input
@@ -118,14 +114,13 @@ export default function AddEquipmentForm({ onEquipmentAdded }) {
 
         {error && (
           <div className="rounded-xl border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-            <span className="mr-2 text-lg">&#9888;&#65039;</span>
             {error}
           </div>
         )}
 
         <button
           type="submit"
-          className="dark-gradient w-full transform cursor-pointer rounded-xl px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg">
+          className="w-full transform cursor-pointer rounded-xl bg-blue-500 px-6 py-4 text-lg font-bold text-white transition-all duration-200 hover:scale-101 hover:shadow-lg">
           Dodaj sprzęt
         </button>
       </form>

@@ -61,27 +61,14 @@ export default function RentalList({ userId, refresh, onUpdate }) {
       });
   }, [selectedUser, selectedEquipment, statusFilter, refresh]);
 
-  const getEquipmentEmoji = (type) => {
-    const emojiMap = {
-      narty: "&#127935;",
-      buty: "&#128095;",
-      kijki: "&#x26F7;&#xFE0F;",
-      snowboard: "&#127938;",
-      kask: "&#x26D1;&#xFE0F;",
-      gogle: "&#x1F97D;",
-    };
-    return <span dangerouslySetInnerHTML={{ __html: emojiMap[type] || "&#127935;" }} />;
-  };
-
   const isOverdue = (returnDate, returned) => {
     if (returned) return false;
     return new Date(returnDate) < new Date();
   };
 
   return (
-    <div className="glass light-gradient rounded-2xl border border-white/30 p-6 shadow-lg">
+    <div className="glass rounded-2xl border border-white/30 bg-[#88dfff] p-6 shadow-lg">
       <h3 className="mb-6 flex items-center text-2xl font-bold text-gray-800">
-        <span className="mr-2 text-2xl">&#128203;</span>
         Historia wypożyczeń
         <span className="ml-auto rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800">
           {rentals.length} {rentals.length === 1 ? "pozycja" : "pozycji"}
@@ -91,7 +78,6 @@ export default function RentalList({ userId, refresh, onUpdate }) {
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128100;</span>
             Filtruj po kliencie:
           </label>
           <select
@@ -101,7 +87,7 @@ export default function RentalList({ userId, refresh, onUpdate }) {
             <option value="">-- Wszyscy klienci --</option>
             {users.map((u) => (
               <option key={u._id} value={u._id}>
-                &#128100; {u.name}
+                {u.name}
               </option>
             ))}
           </select>
@@ -109,7 +95,6 @@ export default function RentalList({ userId, refresh, onUpdate }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#x26F7;&#xFE0F;</span>
             Filtruj po sprzęcie:
           </label>
           <select
@@ -119,7 +104,7 @@ export default function RentalList({ userId, refresh, onUpdate }) {
             <option value="">-- Wszystkie sprzęty --</option>
             {equipmentList.map((eq) => (
               <option key={eq._id} value={eq._id}>
-                {getEquipmentEmoji(eq.type)} {eq.name}
+                {eq.name} ({eq.type})
               </option>
             ))}
           </select>
@@ -127,24 +112,22 @@ export default function RentalList({ userId, refresh, onUpdate }) {
 
         <div>
           <label className="mb-2 block text-sm font-semibold text-gray-700">
-            <span className="mr-1 text-lg">&#128202;</span>
             Status:
           </label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="glass w-full rounded-xl border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-200">
-            <option value="all">&#128203; Wszystkie</option>
-            <option value="active">&#128994; Aktywne</option>
-            <option value="returned">&#9989; Zwrócone</option>
-            <option value="overdue">&#9888;&#65039; Zaległe</option>
+            <option value="all">Wszystkie</option>
+            <option value="active">Aktywne</option>
+            <option value="returned">Zwrócone</option>
+            <option value="overdue">Zaległe</option>
           </select>
         </div>
       </div>
 
       {rentals.length === 0 ? (
         <div className="py-8 text-center text-gray-500">
-          <span className="mb-2 block text-4xl">&#10052;&#65039;</span>
           <p className="text-lg">Brak wypożyczeń do wyświetlenia</p>
           <p className="text-sm">Spróbuj zmienić filtry lub dodać nowe wypożyczenie!</p>
         </div>
@@ -162,10 +145,9 @@ export default function RentalList({ userId, refresh, onUpdate }) {
               }`}>
               <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="text-2xl">{getEquipmentEmoji(r.equipment?.type)}</div>
                   <div>
                     <h4 className="font-bold text-gray-800">{r.equipment?.name || "Brak danych"}</h4>
-                    <p className="text-sm text-gray-600">&#128100; {r.user?.name || "Brak danych"}</p>
+                    <p className="text-sm text-gray-600">{r.user?.name || "Brak danych"}</p>
                   </div>
                 </div>
 
@@ -177,7 +159,6 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                     }}
                     className="cursor-pointer"
                     title="Edytuj wypożyczenie">
-                    <span className="text-lg text-gray-600">&#x2699;&#xFE0F;</span>
                   </button>
                   <div className="flex flex-col items-end space-y-1">
                     <div
@@ -189,16 +170,16 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                             : "bg-blue-100 text-blue-800"
                       }`}>
                       {r.returned ? (
-                        <>&#9989; Zwrócono</>
+                        <>Zwrócono</>
                       ) : isOverdue(r.returnDate, r.returned) ? (
-                        <>&#9888;&#65039; Zaległe</>
+                        <>Zaległe</>
                       ) : (
-                        <>&#128994; Aktywne</>
+                        <>Aktywne</>
                       )}
                     </div>
 
                     {r.cost && (
-                      <div className="text-sm font-bold text-green-600">&#128181; {r.cost.toFixed(2)} PLN</div>
+                      <div className="text-sm font-bold text-green-600">{r.cost.toFixed(2)} PLN</div>
                     )}
                   </div>
                 </div>
@@ -208,11 +189,11 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Wypożyczenie:</span>
-                    <span className="font-medium">&#128197; {new Date(r.rentalDate).toLocaleDateString()}</span>
+                    <span className="font-medium">{new Date(r.rentalDate).toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Planowany zwrot:</span>
-                    <span className="font-medium">&#128197; {new Date(r.returnDate).toLocaleDateString()}</span>
+                    <span className="font-medium">{new Date(r.returnDate).toLocaleDateString()}</span>
                   </div>
                 </div>
 
@@ -224,7 +205,7 @@ export default function RentalList({ userId, refresh, onUpdate }) {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Status sprzętu:</span>
                     <span className={`font-medium ${r.equipment?.available ? "text-green-600" : "text-red-600"}`}>
-                      {r.equipment?.available ? <>&#9989; Dostępny</> : <>&#128683; Niedostępny</>}
+                      {r.equipment?.available ? <>Dostępny</> : <>Niedostępny</>}
                     </span>
                   </div>
                 </div>

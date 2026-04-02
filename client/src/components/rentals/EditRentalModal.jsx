@@ -11,18 +11,6 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [equipmentList, setEquipmentList] = useState([]);
 
-  const getEquipmentEmoji = (type) => {
-    const emojiMap = {
-      narty: "&#127935;",
-      buty: "&#128095;",
-      kijki: "&#x26F7;&#xFE0F;",
-      snowboard: "&#127938;",
-      kask: "&#x26D1;&#xFE0F;",
-      gogle: "&#x1F97D;",
-    };
-    return <span dangerouslySetInnerHTML={{ __html: emojiMap[type] || "&#127935;" }} />;
-  };
-
   useEffect(() => {
     if (isOpen) {
       fetch("http://localhost:5000/api/equipment")
@@ -108,7 +96,6 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
     <Modal isOpen={isOpen} onClose={onClose} title="Edytuj wypożyczenie">
       {showDeleteConfirm ? (
         <div className="text-center">
-          <div className="mb-4 text-6xl">&#9888;&#65039;</div>
           <h3 className="mb-4 text-xl font-bold">Potwierdź usunięcie</h3>
           <p className="mb-6 text-gray-600">
             Czy na pewno chcesz usunąć wypożyczenie sprzętu <strong>{rental.equipment?.name}</strong> dla klienta{" "}
@@ -136,14 +123,12 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
             <h4 className="mb-3 font-semibold text-gray-700">Informacje o wypożyczeniu:</h4>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">{getEquipmentEmoji(rental.equipment?.type)}</span>
                 <div>
                   <div className="font-medium">{rental.equipment?.name || "Brak danych"}</div>
                   <div className="text-sm text-gray-600 capitalize">{rental.equipment?.type || "Nieznany"}</div>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <span className="text-2xl">&#128100;</span>
                 <div>
                   <div className="font-medium">{rental.user?.name || "Brak danych"}</div>
                   <div className="text-sm text-gray-600">{rental.user?.email || "Brak danych"}</div>
@@ -160,11 +145,11 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
                       : "bg-blue-100 text-blue-800"
                 }`}>
                 {rental.returned ? (
-                  <>&#9989; Zwrócono</>
+                  <>Zwrócono</>
                 ) : isOverdue(rental.returnDate, rental.returned) ? (
-                  <>&#9888;&#65039; Zaległe</>
+                  <>Zaległe</>
                 ) : (
-                  <>&#128994; Aktywne</>
+                  <>Aktywne</>
                 )}
               </div>
               <div className="text-xs text-gray-500">ID: {rental._id}</div>
@@ -207,7 +192,7 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
                   .filter((eq) => eq.available || eq._id === rental?.equipment?._id)
                   .map((eq) => (
                     <option key={eq._id} value={eq._id}>
-                      {getEquipmentEmoji(eq.type)} {eq.name} ({eq.type})
+                      {eq.name} ({eq.type})
                       {eq._id === rental?.equipment?._id && " - Aktualnie wypożyczony"}
                     </option>
                   ))}{" "}
@@ -219,14 +204,12 @@ export default function EditRentalModal({ isOpen, onClose, rental, onUpdate, onD
                 type="button"
                 onClick={() => setShowDeleteConfirm(true)}
                 className="flex-1 cursor-pointer rounded-xl bg-red-500 px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-red-600">
-                <span className="mr-2">&#128465;</span>
                 Usuń wypożyczenie
               </button>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="dark-gradient flex-1 cursor-pointer rounded-xl px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
-                <span className="mr-2">&#128190;</span>
+                className="flex-1 cursor-pointer rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition-all duration-200 hover:shadow-lg disabled:opacity-50">
                 {isLoading ? "Zapisywanie..." : "Zapisz zmiany"}
               </button>
             </div>
